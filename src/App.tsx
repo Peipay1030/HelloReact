@@ -7,7 +7,14 @@ import { FormEvent, useState } from "react";
 const App = () => {
   //const [idCounter, setIdCounter] = useState(0);
   const [count, setCount] = useState<number>(0);
-  const [todos, setTodo] = useState([]);
+
+  interface Todo {
+    id: number;
+    task: string;
+    checked: boolean;
+  }
+
+  const [todos, setTodo] = useState<Todo[]>([]);
 
   /**
    *
