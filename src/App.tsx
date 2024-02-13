@@ -5,7 +5,8 @@ import { FormEvent, useState } from "react";
 ///stateの宣言
 ///state＝状態　更新されるも
 const App = () => {
-  const [idCounter, setIdCounter] = useState(0);
+  //const [idCounter, setIdCounter] = useState(0);
+  const [count, setCount] = useState<number>(0);
   const [todos, setTodo] = useState([]);
 
   /**
@@ -21,11 +22,12 @@ const App = () => {
     ///送信イベントからtaskを取り出して変数に入れる
     const inputText = e.target["task"].value;
     ///変数idCounterに1足す変数
-    const nextid = idCounter + 1;
+    //const nextid = idCounter + 1;
     ///state idCounterをnextidに更新する
-    setIdCounter(nextid);
+    //setIdCounter(nextid);
+    setCount((count) => count + 1);
     ///state todosを（）内の配列に更新する
-    setTodo([...todos, { id: nextid, task: inputText, checked: false }]);
+    setTodo([...todos, { id: count, task: inputText, checked: false }]);
   };
 
   /**
