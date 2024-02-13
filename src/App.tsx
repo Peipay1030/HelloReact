@@ -12,13 +12,13 @@ const App = () => {
    * フォーム送信するイベント時にstate todo配列に新たなtodoを追加する関数
    * @param {Event} e 送信イベント
    */
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     ///eventのDefaltの動作をprevent（妨げる）する
     ///ページのリロードをやめさせる
     e.preventDefault();
     ///e.target=イベントが発生した要素
     ///送信イベントからtaskを取り出して変数に入れる
-    const inputText = e.target["task"].value;
+    const inputText = (e.currentTarget["task"] as HTMLInputElement).value;
     ///変数idCounterに1足す変数
     const nextid = idCounter + 1;
     ///state idCounterをnextidに更新する
