@@ -9,6 +9,7 @@ const App = () => {
   const [todos, setTodo] = useState([]);
 
   /**
+   *
    * フォーム送信するイベント時にstate todo配列に新たなtodoを追加する関数
    * @param {Event} e 送信イベント
    */
