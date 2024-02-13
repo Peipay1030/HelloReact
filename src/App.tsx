@@ -1,4 +1,9 @@
 import { FormEvent, useState } from "react";
+type Todo = {
+  id: number;
+  task: string;
+  checked: boolean;
+};
 
 ///React hooks
 ///const [stateの変数, stateを更新する関数] = useState(stateの初期値)
@@ -7,7 +12,7 @@ import { FormEvent, useState } from "react";
 const App = () => {
   //const [idCounter, setIdCounter] = useState(0);
   const [count, setCount] = useState<number>(0);
-  const [todos, setTodo] = useState([]);
+  const [todos, setTodo] = useState<Todo[]>([]);
 
   /**
    *
