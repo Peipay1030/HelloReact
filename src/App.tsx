@@ -36,7 +36,7 @@ const App = () => {
    * フォーム送信するイベント時にstate todo配列に新たなtodoを追加する関数
    * @param {Event} e 送信イベント
    */
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: any) => {
     ///eventのDefaltの動作をprevent（妨げる）する
     ///ページのリロードをやめさせる
     e.preventDefault();
