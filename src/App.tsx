@@ -6,6 +6,22 @@ type Todo = {
   checked: boolean;
 };
 
+type TodoItemProps = {
+  todo: Todo;
+  onChange: (id: string) => void;
+  onDelete: (id: string) => void;
+};
+
+const TodoItem: React.FC<TodoItemProps> = ({ todo, onChange, onDelete }) => {
+  return (
+    <div className={todo.checked ? "checked" : ""}>
+      <input type="checkbox" onChange={() => onChange(todo.id)} />
+      {todo.task}
+      <button onClick={() => onDelete(todo.id)}>削除</button>
+    </div>
+  );
+};
+
 ///React hooks
 ///const [stateの変数, stateを更新する関数] = useState(stateの初期値)
 ///stateの宣言
@@ -37,10 +53,10 @@ const App = () => {
 
     ///e.target=イベントが発生した要素
     ///送信イベントからtaskを取り出して変数に入れる
-    const inputText = (e.currentTarget["task"] as HTMLInputElement).value;
+
     const uniqueId = uuidv4();
     ///state todosを（）内の配列に更新する
-    setTodo([...todos, { id: uniqueId, task: inputText, checked: false }]);
+    setTodo([...todos, { id: uniqueId, task: trimmedValue, checked: false }]);
     setInputValue("");
     setErrorMessage("");
   };
@@ -63,14 +79,9 @@ const App = () => {
    * @param {number} id
    */
   const handleChangeCheckBox = (id: string) => {
-    const changedTodos = todos.map((todo) => {
-      ///todo.idが与えたidと一致する時、checkedプロパティを反転させる
-      ///元々todo内にあったchekedプロパティはどこ行く？？？
-      if (todo.id === id) {
-        return { ...todo, checked: !todo.checked };
-      }
-      return todo;
-    });
+    const changedTodos = todos.map((todo) =>
+      todo.id === id ? { ...todo, checked: !todo.checked } : todo
+    );
     ///state todosを更新
     setTodo(changedTodos);
   };
@@ -85,16 +96,12 @@ const App = () => {
       </form>
       <div>
         {todos.map((todo) => (
-          <div key={todo.id} className={todo.checked ? "checked" : ""}>
-            <input
-              type="checkbox"
-              onChange={() => handleChangeCheckBox(todo.id)}
-            />
-            {todo.task}
-            <button onClick={() => handleClickDeleteButton(todo.id)}>
-              削除
-            </button>
-          </div>
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            onChange={handleChangeCheckBox}
+            onDelete={handleClickDeleteButton}
+          />
         ))}
       </div>
     </div>
