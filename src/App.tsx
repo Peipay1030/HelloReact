@@ -6,7 +6,7 @@ type Todo = {
   checked: boolean;
 };
 
-///React hooks
+///React hooks____
 ///const [stateの変数, stateを更新する関数] = useState(stateの初期値)
 ///stateの宣言
 ///state＝状態　更新されるも
