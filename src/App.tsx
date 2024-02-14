@@ -53,6 +53,7 @@ const App = () => {
 
     ///e.target=イベントが発生した要素
     ///送信イベントからtaskを取り出して変数に入れる
+
     const uniqueId = uuidv4();
     ///state todosを（）内の配列に更新する
     setTodo([...todos, { id: uniqueId, task: trimmedValue, checked: false }]);
