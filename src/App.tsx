@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 type Todo = {
-  id: number;
+  id: string ;
   task: string;
   checked: boolean;
 };
@@ -11,7 +12,6 @@ type Todo = {
 ///state＝状態　更新されるも
 const App = () => {
   //const [idCounter, setIdCounter] = useState(0);
-  const [count, setCount] = useState<number>(0);
   const [todos, setTodo] = useState<Todo[]>([]);
 
   /**
@@ -25,21 +25,17 @@ const App = () => {
     e.preventDefault();
     ///e.target=イベントが発生した要素
     ///送信イベントからtaskを取り出して変数に入れる
-    const inputText = e.target["task"].value;
-    ///変数idCounterに1足す変数
-    //const nextid = idCounter + 1;
-    ///state idCounterをnextidに更新する
-    //setIdCounter(nextid);
-    setCount((count) => count + 1);
+    const inputText = (e.currentTarget["task"] as HTMLInputElement).value;
+    const uniqueId = uuidv4();
     ///state todosを（）内の配列に更新する
-    setTodo([...todos, { id: count, task: inputText, checked: false }]);
+    setTodo([...todos, { id: uniqueId, task: inputText, checked: false }]);
   };
 
   /**
    * 指定idをtodo配列から取り除く
    * @param {number} id
    */
-  const handleClickDeleteButton = (id: number) => {
+  const handleClickDeleteButton = (id: string) => {
     ///state todosのtodo配列のうち、todo.idがidと一致する場合にその要素を残す
     setTodo(todos.filter((todo) => todo.id !== id));
   };
@@ -48,7 +44,7 @@ const App = () => {
    * TODOのチェックボックスがクリックされたら該当の checked フラグを toggle する
    * @param {number} id
    */
-  const handleChangeCheckBox = (id: number) => {
+  const handleChangeCheckBox = (id: string) => {
     const changedTodos = todos.map((todo) => {
       ///todo.idが与えたidと一致する時、checkedプロパティを反転させる
       ///元々todo内にあったchekedプロパティはどこ行く？？？
