@@ -29,3 +29,16 @@ input[type="checkbox"] {
   width: 16px;
   height: 16px;
 }
+
+.todo-item {
+  display: flex;
+  align-items: center;
+}
+
+.todo-item.checked {
+  text-decoration: line-through;
+}
+
+.content {
+  margin-left: 10px; /* チェックボックスからコンテンツまでの間隔を設定 */
+}

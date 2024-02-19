@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 type Todo = {
   id: string;
   task: string;
+  description: string;
   checked: boolean;
 };
 
@@ -14,9 +15,12 @@ type TodoItemProps = {
 
 const TodoItem: React.FC<TodoItemProps> = ({ todo, onChange, onDelete }) => {
   return (
-    <div className={todo.checked ? "checked" : ""}>
+    <div className={`todo-item ${todo.checked ? "checked" : ""}`}>
       <input type="checkbox" onChange={() => onChange(todo.id)} />
-      {todo.task}
+      <div className="content">
+        <h3>タスク：{todo.task}</h3>
+        <p>説明文：{todo.description}</p>
+      </div>
       <button onClick={() => onDelete(todo.id)}>削除</button>
     </div>
   );
@@ -28,7 +32,8 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onChange, onDelete }) => {
 ///state＝状態　更新されるも
 const App = () => {
   const [todos, setTodo] = useState<Todo[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputTask, setInputTask] = useState<string>("");
+  const [inputDescription, setInputDescription] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   /**
@@ -40,13 +45,14 @@ const App = () => {
     ///eventのDefaltの動作をprevent（妨げる）する
     ///ページのリロードをやめさせる
     e.preventDefault();
-    const trimmedValue = inputValue.trim();
+    const trimmedTask = inputTask.trim();
+    const trimmedDescription = inputDescription.trim();
 
-    if (!trimmedValue) {
+    if (!trimmedTask) {
       setErrorMessage("タスクを入力してください");
       return;
     }
-    if (trimmedValue.length > 15) {
+    if (trimmedTask.length > 15) {
       setErrorMessage("タスクは15文字以内で入力してください");
       return;
     }
@@ -56,13 +62,26 @@ const App = () => {
 
     const uniqueId = uuidv4();
     ///state todosを（）内の配列に更新する
-    setTodo([...todos, { id: uniqueId, task: trimmedValue, checked: false }]);
-    setInputValue("");
+    setTodo([
+      ...todos,
+      {
+        id: uniqueId,
+        task: trimmedTask,
+        description: trimmedDescription,
+        checked: false,
+      },
+    ]);
+    setInputTask("");
+    setInputDescription("");
     setErrorMessage("");
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+  const handleChangeTask = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputTask(e.target.value);
+  };
+
+  const handleChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputDescription(e.target.value);
   };
 
   /**
@@ -91,7 +110,18 @@ const App = () => {
       <h1>ToDoList</h1>
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       <form onSubmit={handleSubmit}>
-        <input name="task" value={inputValue} onChange={handleChange} />
+        <input
+          name="task"
+          value={inputTask}
+          onChange={handleChangeTask}
+          placeholder="タスクを入力してください"
+        />
+        <input
+          name="description"
+          value={inputDescription}
+          onChange={handleChangeDescription}
+          placeholder="説明を入力してください"
+        />
         <button>登録</button>
       </form>
       <div>
