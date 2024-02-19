@@ -1,5 +1,7 @@
 import { FormEvent, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useForm } from "react-hook-form";
+
 type Todo = {
   id: string;
   task: string;
@@ -26,42 +28,46 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onChange, onDelete }) => {
   );
 };
 
-///React hooks
-///const [stateの変数, stateを更新する関数] = useState(stateの初期値)
-///stateの宣言
-///state＝状態　更新されるも
 const App = () => {
   const [todos, setTodo] = useState<Todo[]>([]);
   const [inputTask, setInputTask] = useState<string>("");
   const [inputDescription, setInputDescription] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [taskerrorMessage, setTaskErrorMessage] = useState<string>("");
+  const [descriptionerrorMessage, setDescriptionErrorMessage] =
+    useState<string>("");
 
-  /**
-   *
-   * フォーム送信するイベント時にstate todo配列に新たなtodoを追加する関数
-   * @param {Event} e 送信イベント
-   */
   const handleSubmit = (e: any) => {
-    ///eventのDefaltの動作をprevent（妨げる）する
-    ///ページのリロードをやめさせる
     e.preventDefault();
     const trimmedTask = inputTask.trim();
     const trimmedDescription = inputDescription.trim();
 
+    let taskError = "";
+    let descriptionError = "";
+
     if (!trimmedTask) {
-      setErrorMessage("タスクを入力してください");
-      return;
-    }
-    if (trimmedTask.length > 15) {
-      setErrorMessage("タスクは15文字以内で入力してください");
-      return;
+      taskError = "タスクを入力してください";
+    } else if (trimmedTask.length > 15) {
+      taskError = "タスクは15文字以内で入力してください";
     }
 
-    ///e.target=イベントが発生した要素
-    ///送信イベントからtaskを取り出して変数に入れる
+    if (!trimmedDescription.match(/^[a-zA-Z0-9]+$/)) {
+      descriptionError =
+        "説明文にアルファベットと数字以外を使用しないでください";
+    } else if (
+      trimmedDescription.length < 100 &&
+      trimmedDescription.length > 15
+    ) {
+      descriptionError = "指定文字数を満足してください";
+    }
+
+    setTaskErrorMessage(taskError);
+    setDescriptionErrorMessage(descriptionError);
+
+    if (taskError || descriptionError) {
+      return;
+    }
 
     const uniqueId = uuidv4();
-    ///state todosを（）内の配列に更新する
     setTodo([
       ...todos,
       {
@@ -73,7 +79,6 @@ const App = () => {
     ]);
     setInputTask("");
     setInputDescription("");
-    setErrorMessage("");
   };
 
   const handleChangeTask = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +113,10 @@ const App = () => {
   return (
     <div>
       <h1>ToDoList</h1>
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      {taskerrorMessage && <p style={{ color: "red" }}>{taskerrorMessage}</p>}
+      {descriptionerrorMessage && (
+        <p style={{ color: "red" }}>{descriptionerrorMessage}</p>
+      )}
       <form onSubmit={handleSubmit}>
         <input
           name="task"
