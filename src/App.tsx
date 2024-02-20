@@ -29,64 +29,24 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onChange, onDelete }) => {
 };
 
 const App = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const [todos, setTodo] = useState<Todo[]>([]);
-  const [inputTask, setInputTask] = useState<string>("");
-  const [inputDescription, setInputDescription] = useState<string>("");
-  const [taskerrorMessage, setTaskErrorMessage] = useState<string>("");
-  const [descriptionerrorMessage, setDescriptionErrorMessage] =
-    useState<string>("");
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    const trimmedTask = inputTask.trim();
-    const trimmedDescription = inputDescription.trim();
-
-    let taskError = "";
-    let descriptionError = "";
-
-    if (!trimmedTask) {
-      taskError = "タスクを入力してください";
-    } else if (trimmedTask.length > 15) {
-      taskError = "タスクは15文字以内で入力してください";
-    }
-
-    if (!trimmedDescription.match(/^[a-zA-Z0-9]+$/)) {
-      descriptionError =
-        "説明文にアルファベットと数字以外を使用しないでください";
-    } else if (
-      trimmedDescription.length < 100 &&
-      trimmedDescription.length > 15
-    ) {
-      descriptionError = "指定文字数を満足してください";
-    }
-
-    setTaskErrorMessage(taskError);
-    setDescriptionErrorMessage(descriptionError);
-
-    if (taskError || descriptionError) {
-      return;
-    }
-
+  const onSubmit = (data: Todo) => {
     const uniqueId = uuidv4();
     setTodo([
       ...todos,
       {
         id: uniqueId,
-        task: trimmedTask,
-        description: trimmedDescription,
+        task: data.task.trim(),
+        description: data.description.trim(),
         checked: false,
       },
     ]);
-    setInputTask("");
-    setInputDescription("");
-  };
-
-  const handleChangeTask = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputTask(e.target.value);
-  };
-
-  const handleChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputDescription(e.target.value);
   };
 
   /**
@@ -113,24 +73,38 @@ const App = () => {
   return (
     <div>
       <h1>ToDoList</h1>
-      {taskerrorMessage && <p style={{ color: "red" }}>{taskerrorMessage}</p>}
-      {descriptionerrorMessage && (
-        <p style={{ color: "red" }}>{descriptionerrorMessage}</p>
-      )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <input
-          name="task"
-          value={inputTask}
-          onChange={handleChangeTask}
+          {...register("task", { required: true, maxLength: 15 })}
           placeholder="タスクを入力してください"
         />
+        {errors.task && errors.task.type === "required" && (
+          <p style={{ color: "red" }}>タスクを入力してください</p>
+        )}
+        {errors.task && errors.task.type === "maxLength" && (
+          <p style={{ color: "red" }}>タスクは15文字以内で入力してください</p>
+        )}
+
         <input
-          name="description"
-          value={inputDescription}
-          onChange={handleChangeDescription}
+          {...register("description", {
+            required: true,
+            pattern: /^[a-zA-Z0-9]+$/,
+            minLength: 15,
+            maxLength: 100,
+          })}
           placeholder="説明を入力してください"
         />
-        <button>登録</button>
+        {errors.description && (
+          <p style={{ color: "red" }}>
+            {errors.description.type === "required" && "説明を入力してください"}
+            {errors.description.type === "pattern" &&
+              "説明文にアルファベットと数字以外を使用しないでください"}
+            {(errors.description.type === "minLength" ||
+              errors.description.type === "maxLength") &&
+              "説明は15文字以上100文字以下で入力してください"}
+          </p>
+        )}
+        <button type="submit">登録</button>
       </form>
       <div>
         {todos.map((todo) => (
