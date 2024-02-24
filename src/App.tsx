@@ -20,7 +20,22 @@ const todoSchema = z.object({
   checked: z.boolean(),
 });
 
+const formSchema = z.object({
+  task: z
+    .string()
+    .min(1, { message: "タスクを入力してください" })
+    .max(15, { message: "タスクは15文字以内で入力してください" }),
+  description: z
+    .string()
+    .min(15, { message: "説明文は15文字以上入力してください" })
+    .max(100, { message: "説明文は100文字以下で入力してください" })
+    .regex(/^[a-zA-Z0-9]+$/, {
+      message: "説明文はアルファベットと英数字で記入してください",
+    }),
+});
+
 type Todo = z.infer<typeof todoSchema>;
+type Form = z.infer<typeof formSchema>;
 
 type TodoItemProps = {
   todo: Todo;
@@ -50,18 +65,19 @@ const App = () => {
     register,
     handleSubmit,
     setValue,
-    resetField,
+    reset,
     watch,
     getValues,
     control,
     formState: { errors },
-  } = useForm<Todo>({
-    resolver: zodResolver(todoSchema),
+  } = useForm<Form>({
+    resolver: zodResolver(formSchema),
   });
 
   const [todos, setTodo] = useState<Todo[]>([]);
 
-  const onSubmit = (data: Todo) => {
+  const onSubmit = (data: Form) => {
+    console.log("called");
     const uniqueId = uuidv4();
     setTodo([
       ...todos,
@@ -72,7 +88,7 @@ const App = () => {
         checked: false,
       },
     ]);
-    resetField("task");
+    reset();
   };
 
   /**
