@@ -1,6 +1,6 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 type Todo = {
   id: string;
@@ -28,10 +28,19 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onChange, onDelete }) => {
   );
 };
 
+const ErrorMessage = ({ message }: { message: string }) => {
+  return <p style={{ color: "red" }}>{message}</p>;
+};
+
 const App = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    resetField,
+    watch,
+    getValues,
+    control,
     formState: { errors },
   } = useForm();
   const [todos, setTodo] = useState<Todo[]>([]);
@@ -47,6 +56,9 @@ const App = () => {
         checked: false,
       },
     ]);
+    ///setValue("task", "");
+    ///setValue("description", "");
+    resetField("task");
   };
 
   /**
@@ -70,6 +82,44 @@ const App = () => {
     setTodo(changedTodos);
   };
 
+  console.log(errors, errors.task);
+
+  const taskErrorMessage = useMemo(() => {
+    switch (errors.task?.type) {
+      case "required":
+        return "タスクを入力してください";
+      case "maxLength":
+        return "タスクは15文字以内で入力してください";
+      default:
+        return null;
+    }
+  }, [errors.task?.type]);
+
+  const descriptionErrorMessage = useMemo(() => {
+    switch (errors.description?.type) {
+      case "required":
+        return "説明を入力してください";
+      case "pattern":
+        return "説明文はアルファベットと英数字で記入してください";
+      case "minLength":
+        return "説明文は15文字以内で入力してください";
+      case "maxLength":
+        return "説明文は100文字以下で入力してください";
+      default:
+        return null;
+    }
+  }, [errors.description?.type]);
+
+  const Counter = () => {
+    return; ///数字
+  };
+
+  const formValues = useWatch({
+    name: "description",
+    control: control,
+  });
+  const descriptionTextLength = formValues?.length;
+
   return (
     <div>
       <h1>ToDoList</h1>
@@ -78,13 +128,8 @@ const App = () => {
           {...register("task", { required: true, maxLength: 15 })}
           placeholder="タスクを入力してください"
         />
-        {errors.task && errors.task.type === "required" && (
-          <p style={{ color: "red" }}>タスクを入力してください</p>
-        )}
-        {errors.task && errors.task.type === "maxLength" && (
-          <p style={{ color: "red" }}>タスクは15文字以内で入力してください</p>
-        )}
-
+        {taskErrorMessage && <ErrorMessage message={taskErrorMessage} />}
+        <div>{descriptionTextLength}</div>
         <input
           {...register("description", {
             required: true,
@@ -94,15 +139,8 @@ const App = () => {
           })}
           placeholder="説明を入力してください"
         />
-        {errors.description && (
-          <p style={{ color: "red" }}>
-            {errors.description.type === "required" && "説明を入力してください"}
-            {errors.description.type === "pattern" &&
-              "説明文にアルファベットと数字以外を使用しないでください"}
-            {(errors.description.type === "minLength" ||
-              errors.description.type === "maxLength") &&
-              "説明は15文字以上100文字以下で入力してください"}
-          </p>
+        {descriptionErrorMessage && (
+          <ErrorMessage message={descriptionErrorMessage} />
         )}
         <button type="submit">登録</button>
       </form>
