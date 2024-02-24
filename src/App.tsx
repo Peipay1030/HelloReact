@@ -1,13 +1,41 @@
 import { FormEvent, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-type Todo = {
-  id: string;
-  task: string;
-  description: string;
-  checked: boolean;
-};
+const todoSchema = z.object({
+  id: z.string().uuid(),
+  task: z
+    .string()
+    .min(1, { message: "タスクを入力してください" })
+    .max(15, { message: "タスクは15文字以内で入力してください" }),
+  description: z
+    .string()
+    .min(15, { message: "説明文は15文字以上入力してください" })
+    .max(100, { message: "説明文は100文字以下で入力してください" })
+    .regex(/^[a-zA-Z0-9]+$/, {
+      message: "説明文はアルファベットと英数字で記入してください",
+    }),
+  checked: z.boolean(),
+});
+
+const formSchema = z.object({
+  task: z
+    .string()
+    .min(1, { message: "タスクを入力してください" })
+    .max(15, { message: "タスクは15文字以内で入力してください" }),
+  description: z
+    .string()
+    .min(15, { message: "説明文は15文字以上入力してください" })
+    .max(100, { message: "説明文は100文字以下で入力してください" })
+    .regex(/^[a-zA-Z0-9]+$/, {
+      message: "説明文はアルファベットと英数字で記入してください",
+    }),
+});
+
+type Todo = z.infer<typeof todoSchema>;
+type Form = z.infer<typeof formSchema>;
 
 type TodoItemProps = {
   todo: Todo;
@@ -37,15 +65,19 @@ const App = () => {
     register,
     handleSubmit,
     setValue,
-    resetField,
+    reset,
     watch,
     getValues,
     control,
     formState: { errors },
-  } = useForm();
+  } = useForm<Form>({
+    resolver: zodResolver(formSchema),
+  });
+
   const [todos, setTodo] = useState<Todo[]>([]);
 
-  const onSubmit = (data: Todo) => {
+  const onSubmit = (data: Form) => {
+    console.log("called");
     const uniqueId = uuidv4();
     setTodo([
       ...todos,
@@ -56,9 +88,7 @@ const App = () => {
         checked: false,
       },
     ]);
-    ///setValue("task", "");
-    ///setValue("description", "");
-    resetField("task");
+    reset();
   };
 
   /**
@@ -82,38 +112,6 @@ const App = () => {
     setTodo(changedTodos);
   };
 
-  console.log(errors, errors.task);
-
-  const taskErrorMessage = useMemo(() => {
-    switch (errors.task?.type) {
-      case "required":
-        return "タスクを入力してください";
-      case "maxLength":
-        return "タスクは15文字以内で入力してください";
-      default:
-        return null;
-    }
-  }, [errors.task?.type]);
-
-  const descriptionErrorMessage = useMemo(() => {
-    switch (errors.description?.type) {
-      case "required":
-        return "説明を入力してください";
-      case "pattern":
-        return "説明文はアルファベットと英数字で記入してください";
-      case "minLength":
-        return "説明文は15文字以内で入力してください";
-      case "maxLength":
-        return "説明文は100文字以下で入力してください";
-      default:
-        return null;
-    }
-  }, [errors.description?.type]);
-
-  const Counter = () => {
-    return; ///数字
-  };
-
   const formValues = useWatch({
     name: "description",
     control: control,
@@ -124,23 +122,17 @@ const App = () => {
     <div>
       <h1>ToDoList</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <label>task</label>
+        <input {...register("task")} placeholder="タスクを入力してください" />
+        {errors.task && <ErrorMessage message={errors.task?.message} />}
+        <label>description</label>
         <input
-          {...register("task", { required: true, maxLength: 15 })}
-          placeholder="タスクを入力してください"
-        />
-        {taskErrorMessage && <ErrorMessage message={taskErrorMessage} />}
-        <div>{descriptionTextLength}</div>
-        <input
-          {...register("description", {
-            required: true,
-            pattern: /^[a-zA-Z0-9]+$/,
-            minLength: 15,
-            maxLength: 100,
-          })}
+          {...register("description")}
           placeholder="説明を入力してください"
         />
-        {descriptionErrorMessage && (
-          <ErrorMessage message={descriptionErrorMessage} />
+        <div>{descriptionTextLength}/100</div>
+        {errors.description && (
+          <ErrorMessage message={errors.description?.message} />
         )}
         <button type="submit">登録</button>
       </form>
