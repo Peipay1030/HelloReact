@@ -1,9 +1,8 @@
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema, Form } from "./Schema";
+import { formSchema, Form, Todo } from "./Schema";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Todo } from "./Schema";
 import { TodoItem } from "./TodoItem";
 
 const {
