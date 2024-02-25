@@ -1,4 +1,3 @@
-// TodoItem.tsx
 import React from "react";
 import { Todo } from "./Schema";
 
@@ -8,10 +7,14 @@ type TodoItemProps = {
   onDelete: (id: string) => void;
 };
 
-export const TodoItem: React.FC<TodoItemProps> = ({
+export const TodoItem = ({
   todo,
   onChange,
   onDelete,
+}: {
+  todo: Todo;
+  onChange: (id: string) => void;
+  onDelete: (id: string) => void;
 }) => {
   return (
     <div className={`todo-item ${todo.checked ? "checked" : ""}`}>

@@ -1,20 +1,45 @@
 import { ErrorMessage } from "./ErrorMessage";
-import { descriptionTextLength, onSubmit } from "./taskForm";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema, Form } from "./Schema";
+import { formSchema, Form, Todo } from "./Schema";
+import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
 
-const {
-  register,
-  handleSubmit,
-  formState: { errors },
-} = useForm<Form>({
-  resolver: zodResolver(formSchema),
-});
+export const TaskSubmit = ({
+  onSubmit,
+}: {
+  onSubmit: (todo: Todo) => void;
+}) => {
+  const {
+    reset,
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<Form>({
+    resolver: zodResolver(formSchema),
+  });
 
-export const TaskSubmit = () => {
+  const submit = (data: Form) => {
+    console.log("call");
+    const uniqueId = uuidv4();
+    onSubmit({
+      id: uniqueId,
+      task: data.task.trim(),
+      description: data.description.trim(),
+      checked: false,
+    });
+    reset();
+  };
+
+  const formValues = useWatch({
+    name: "description",
+    control: control,
+  });
+  const descriptionTextLength = formValues?.length;
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(submit)}>
       <label>task</label>
       <input {...register("task")} placeholder="タスクを入力してください" />
       {errors.task && <ErrorMessage message={errors.task?.message} />}
