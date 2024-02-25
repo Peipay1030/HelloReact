@@ -1,7 +1,7 @@
 import { ErrorMessage } from "./ErrorMessage";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema, Form, Todo } from "./Schema";
+import { formSchema, Form, Todo } from "./schema";
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 

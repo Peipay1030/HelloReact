@@ -1,5 +1,5 @@
 import React from "react";
-import { Todo } from "./Schema";
+import { Todo } from "./schema";
 
 type TodoItemProps = {
   todo: Todo;

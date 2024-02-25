@@ -1,6 +1,6 @@
 import { TaskList } from "./TaskList";
 import { TaskSubmit } from "./TaskSubmit";
-import { Todo } from "./Schema";
+import { Todo } from "./schema";
 import { useState } from "react";
 
 const App = () => {

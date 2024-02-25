@@ -1,5 +1,5 @@
 import { TodoItem } from "./TodoItem";
-import { Todo } from "./Schema";
+import { Todo } from "./schema";
 
 type TaskListProps = {
   todos: Todo[];
