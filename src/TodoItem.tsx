@@ -1,4 +1,3 @@
-import React from "react";
 import { Todo } from "./schema";
 
 type TodoItemProps = {
@@ -7,19 +6,11 @@ type TodoItemProps = {
   onDelete: (id: string) => void;
 };
 
-export const TodoItem = ({
-  todo,
-  onChange,
-  onDelete,
-}: {
-  todo: Todo;
-  onChange: (id: string) => void;
-  onDelete: (id: string) => void;
-}) => {
+const TodoItem = ({ todo, onChange, onDelete }: TodoItemProps) => {
   return (
     <div className={`todo-item ${todo.checked ? "checked" : ""}`}>
       <input type="checkbox" onChange={() => onChange(todo.id)} />
-      <div className="content">
+      <div>
         <h3>タスク：{todo.task}</h3>
         <p>説明文：{todo.description}</p>
       </div>

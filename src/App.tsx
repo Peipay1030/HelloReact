@@ -1,40 +1,37 @@
-import { TaskList } from "./TaskList";
-import { TaskSubmit } from "./TaskSubmit";
-import { Todo } from "./schema";
-import { useState } from "react";
+import React, { useState } from "react";
 
-const App = () => {
-  const [todos, setTodo] = useState<Todo[]>([]);
+type Todo = {
+  id: string;
+  task: string;
+  description: string;
+  checked: boolean;
+};
 
-  const handleClickDeleteButton = (id: string) => {
-    setTodo(todos.filter((todo) => todo.id !== id));
-  };
+const TodoItem = ()=>{
+    return()
+}
 
-  const handleChangeCheckBox = (id: string) => {
-    const changedTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, checked: !todo.checked } : todo
-    );
-    setTodo(changedTodos);
-  };
+const TodoList = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
 
-  const onSubmit = (todo: Todo) => {
-    setTodo((todos) => [...todos, todo]);
-  };
-
-  const tasklistTitle = "タスク一覧";
+  const onsubmit = ()=>{};
+  const handleSubmit = ()=>{}
 
   return (
     <div>
-      <h1>ToDoList</h1>
-      <TaskSubmit onSubmit={onSubmit} />
-      <TaskList
-        todos={todos}
-        handleChangeCheckBox={handleChangeCheckBox}
-        handleClickDeleteButton={handleClickDeleteButton}
-        title={tasklistTitle}
-      />
+      <h2>TodoList</h2>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <label>
+          タスク：<input name="task" />
+        </label>
+        <div />
+        <label>
+            説明：<input name="description"/>
+        </label>
+        <button onClick={onsubmit}>登録</button>
+      </form>
     </div>
   );
 };
 
-export default App;
+export default TodoList;
