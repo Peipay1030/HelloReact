@@ -6,7 +6,7 @@ type TodoItemProps = {
   onDelete: (id: string) => void;
 };
 
-const TodoItem = ({ todo, onChange, onDelete }: TodoItemProps) => {
+export const TodoItem = ({ todo, onChange, onDelete }: TodoItemProps) => {
   return (
     <div className={`todo-item ${todo.checked ? "checked" : ""}`}>
       <input type="checkbox" onChange={() => onChange(todo.id)} />
