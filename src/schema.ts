@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+///zod:ライブラリ
+///オブジェクト内の要素の制約を定義
+///入力値が誤っていたらエラーメッセージを返す
 export const todoschema = z.object({
   id: z.string().uuid(),
   task: z

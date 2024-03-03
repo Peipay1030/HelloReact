@@ -6,6 +6,8 @@ type TodoItemProps = {
   onDelete: (id: string) => void;
 };
 
+///todo.checkedが真ならchecked、偽なら""
+///クリックされたらonDelete関数にtodo.idを与えて呼ぶ
 export const TodoItem = ({ todo, onChange, onDelete }: TodoItemProps) => {
   return (
     <div className={`todo-item ${todo.checked ? "checked" : ""}`}>
