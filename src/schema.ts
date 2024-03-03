@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-export const todoSchema = z.object({
+///zod:ライブラリ
+///オブジェクト内の要素の制約を定義
+///入力値が誤っていたらエラーメッセージを返す
+export const todoschema = z.object({
   id: z.string().uuid(),
   task: z
     .string()
@@ -8,17 +11,17 @@ export const todoSchema = z.object({
     .max(15, { message: "タスクは15文字以内で入力してください" }),
   description: z
     .string()
-    .min(15, { message: "説明文は15文字以上入力してください" })
-    .max(100, { message: "説明文は100文字以下で入力してください" })
+    .min(15, { message: "説明は15文字以上で入力してください" })
+    .max(100, { message: "説明は100文字以下で入力してください" })
     .regex(/^[a-zA-Z0-9]+$/, {
-      message: "説明文はアルファベットと英数字で記入してください",
+      message: "説明はアルファベットと英数字で入力してください",
     }),
   checked: z.boolean(),
 });
 
-export type Todo = z.infer<typeof todoSchema>;
+export type Todo = z.infer<typeof todoschema>;
 
-export const formSchema = z.object({
+export const formschema = z.object({
   task: z
     .string()
     .min(1, { message: "タスクを入力してください" })
@@ -32,4 +35,4 @@ export const formSchema = z.object({
     }),
 });
 
-export type Form = z.infer<typeof formSchema>;
+export type Form = z.infer<typeof formschema>;
