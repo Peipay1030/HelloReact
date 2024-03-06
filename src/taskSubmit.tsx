@@ -3,8 +3,9 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formschema, Form, Todo } from "./schema";
 import { v4 as uuidv4 } from "uuid";
-import { Child } from "./Child";
 import { ToastProvider } from "./useToast";
+import { useToast } from "./useToast";
+import { SubmitButton } from "./SubmitButton";
 
 ///onSubmit関数を引数に持つ関数
 export const TaskSubmit = ({
@@ -24,6 +25,8 @@ export const TaskSubmit = ({
     resolver: zodResolver(formschema),
   });
 
+  const showToast = useToast();
+
   ///Form型のprops:dataを受け取って、onSubmit関数を呼ぶ
   const submit = (data: Form) => {
     console.log("call");
@@ -35,6 +38,11 @@ export const TaskSubmit = ({
       checked: false,
     });
     reset();
+    showToast({ text: "絶対終わらせろよ", type: "normal" });
+  };
+
+  const error = () => {
+    showToast({ text: "絶対終わらせろよ", type: "error" });
   };
 
   ///descripitionが更新されるたびにformValuに状態が保存される
@@ -47,22 +55,20 @@ export const TaskSubmit = ({
 
   ///&&(AND) 左が真なら右を評価
   return (
-    <ToastProvider>
-      <form onSubmit={handleSubmit(submit)}>
-        <label>task</label>
-        <input {...register("task")} placeholder="タスクを入力してください" />
-        {errors.task && <ErrorMessage message={errors.task?.message} />}
-        <label>description</label>
-        <input
-          {...register("description")}
-          placeholder="説明を入力してください"
-        />
-        <div>{descriptionTextLength}/100</div>
-        {errors.description && (
-          <ErrorMessage message={errors.description?.message} />
-        )}
-        <Child />
-      </form>
-    </ToastProvider>
+    <form onSubmit={handleSubmit(submit, error)}>
+      <label>task</label>
+      <input {...register("task")} placeholder="タスクを入力してください" />
+      {errors.task && <ErrorMessage message={errors.task?.message} />}
+      <label>description</label>
+      <input
+        {...register("description")}
+        placeholder="説明を入力してください"
+      />
+      <div>{descriptionTextLength}/100</div>
+      {errors.description && (
+        <ErrorMessage message={errors.description?.message} />
+      )}
+      <SubmitButton />
+    </form>
   );
 };

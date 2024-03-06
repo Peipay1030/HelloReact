@@ -2,6 +2,7 @@ import { TaskList } from "./taskList";
 import { TaskSubmit } from "./taskSubmit";
 import { Todo } from "./schema";
 import { useState } from "react";
+import { ToastProvider } from "./useToast";
 
 const App = () => {
   ///todos:変数
@@ -35,6 +36,7 @@ const App = () => {
   ///TaskSubmitの引数onSubmitに関数onSubmitを与える
   ///TaskListの引数にそれぞれ定義したものを与える
   return (
+    <ToastProvider>
     <div>
       <h1>ToDoList</h1>
       <TaskSubmit onSubmit={onSubmit} />
@@ -45,6 +47,7 @@ const App = () => {
         title={tasklistTitle}
       />
     </div>
+    </ToastProvider>
   );
 };
 

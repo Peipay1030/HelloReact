@@ -20,7 +20,7 @@ type Props = {
 
 // 大元のコンポーネントを囲うためのProvider。トーストの実態もここに入れておく
 export const ToastProvider: React.FC<Props> = ({ children }) => {
-  const [showable, setShowable] = useState(false);
+  const [showable, setShowable] = useState(true);
   const [toastText, setToastText] = useState("");
   const [toastType, setToastType] = useState<ToastTypes>("normal");
 
@@ -40,7 +40,7 @@ export const ToastProvider: React.FC<Props> = ({ children }) => {
     <ToastContext.Provider value={showToast}>
       {children}
       {createPortal(
-        <Toast visible={showable} toastType={toastType}>
+        <Toast visible={showable} toasttype={toastType}>
           {toastText}
         </Toast>,
         document.body
@@ -49,7 +49,7 @@ export const ToastProvider: React.FC<Props> = ({ children }) => {
   );
 };
 
-const Toast = styled.div<{ visible: boolean; toastType: ToastTypes }>`
+const Toast = styled.div<{ visible: boolean; toasttype: ToastTypes }>`
   display: ${(p) => (p.visible ? "block" : "none")};
-  background-color: ${(p) => (p.toastType === "normal" ? "blue" : "red")};
+  background-color: ${(p) => (p.toasttype === "normal" ? "blue" : "red")};
 `;
