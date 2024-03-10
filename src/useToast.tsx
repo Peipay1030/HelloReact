@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext, ReactNode } from "react";
-import { createPortal } from "react-dom";
-import styled from "styled-components";
+import "./toast.css"; // CSSファイルのインポート
+import CheckmarkIcon from "./Checkmark";
+import NGmarkIcon from "./NGmark";
 
 type ToastTypes = "normal" | "error";
 
@@ -20,7 +21,7 @@ type Props = {
 
 // 大元のコンポーネントを囲うためのProvider。トーストの実態もここに入れておく
 export const ToastProvider: React.FC<Props> = ({ children }) => {
-  const [showable, setShowable] = useState(true);
+  const [showable, setShowable] = useState(false);
   const [toastText, setToastText] = useState("");
   const [toastType, setToastType] = useState<ToastTypes>("normal");
 
@@ -34,22 +35,24 @@ export const ToastProvider: React.FC<Props> = ({ children }) => {
     setToastText(text);
     setToastType(type);
     setShowable(true);
+    setTimeout(() => {
+      setShowable(false);
+    }, 5000);
   };
 
   return (
     <ToastContext.Provider value={showToast}>
       {children}
-      {createPortal(
-        <Toast visible={showable} toasttype={toastType}>
+      {showable && (
+        <div className={`toast ${toastType === "normal" ? "normal" : "error"}`}>
+          <ToastIcon toastType={toastType} />
           {toastText}
-        </Toast>,
-        document.body
+        </div>
       )}
     </ToastContext.Provider>
   );
 };
 
-const Toast = styled.div<{ visible: boolean; toasttype: ToastTypes }>`
-  display: ${(p) => (p.visible ? "block" : "none")};
-  background-color: ${(p) => (p.toasttype === "normal" ? "blue" : "red")};
-`;
+const ToastIcon = ({ toastType }: { toastType: ToastTypes }) => {
+  return toastType === "normal" ? <CheckmarkIcon /> : <NGmarkIcon />;
+};

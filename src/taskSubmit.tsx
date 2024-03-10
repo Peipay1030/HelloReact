@@ -38,11 +38,11 @@ export const TaskSubmit = ({
       checked: false,
     });
     reset();
-    showToast({ text: "絶対終わらせろよ", type: "normal" });
+    showToast({ text: "Success", type: "normal" });
   };
 
   const error = () => {
-    showToast({ text: "絶対終わらせろよ", type: "error" });
+    showToast({ text: "Error", type: "error" });
   };
 
   ///descripitionが更新されるたびにformValuに状態が保存される

@@ -1,0 +1,130 @@
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.toast-content {
+  margin-right: 10px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: black;
+  background-color: whitesmoke;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  animation-duration: 2.3s;
+  animation-timing-function: ease-out;
+  display: flex;
+  align-items: center;
+}
+
+.normal {
+  animation-name: slideInAndGrowAnimation;
+}
+
+.error {
+  animation-name: slideInAndGrowAnimation;
+}
+
+@keyframes slideInAndGrowAnimation {
+  0% {
+    transform: translateY(100%) scale(0);
+    opacity: 0;
+  }
+  10% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  90% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%) scale(0);
+    opacity: 0;
+  }
+}
+
+.checkmark {
+  margin-right: 10px; /* チェックマークとテキストの間隔を設定 */
+}
+
+.icon {
+  margin-right: 10px; /* チェックマークとテキストの間隔を設定 */
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1000; /* 線の長さ */
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.polyline {
+  animation: draw 1s ease forwards; /* アニメーションを2秒間で実行 */
+}
+
+.dli-close-circle {
+  display: inline-block;
+  vertical-align: middle;
+  color: #333;
+  line-height: 1;
+  position: relative;
+  width: 1em;
+  height: 1em;
+  border: 0.1em solid currentColor;
+  border-radius: 50%;
+  box-sizing: content-box;
+}
+
+.dli-close-circle > span {
+  width: 52%;
+  height: 0.1em;
+  background: currentColor;
+  border-radius: 0.1em;
+  position: relative;
+  transform: rotate(45deg);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.dli-close-circle > span::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  border-radius: inherit;
+  transform: rotate(90deg);
+}
