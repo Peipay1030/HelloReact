@@ -21,32 +21,22 @@ type Props = {
 
 // 大元のコンポーネントを囲うためのProvider。トーストの実態もここに入れておく
 export const ToastProvider: React.FC<Props> = ({ children }) => {
-  const [showable, setShowable] = useState(false);
-  const [toastText, setToastText] = useState("");
-  const [toastType, setToastType] = useState<ToastTypes>("normal");
+  const [toastType, setToastType] = useState<ToastTypes>(null);
 
-  const showToast = ({
-    text,
-    type = "normal",
-  }: {
-    text: string;
-    type?: ToastTypes;
-  }) => {
-    setToastText(text);
+  const showToast = ({ type = "normal" }: { type?: ToastTypes }) => {
     setToastType(type);
-    setShowable(true);
     setTimeout(() => {
-      setShowable(false);
+      setToastType(null);
     }, 5000);
   };
 
   return (
     <ToastContext.Provider value={showToast}>
       {children}
-      {showable && (
+      {toastType && (
         <div className={`toast ${toastType === "normal" ? "normal" : "error"}`}>
           <ToastIcon toastType={toastType} />
-          {toastText}
+          <div>{toastText({ toastType })}</div>
         </div>
       )}
     </ToastContext.Provider>
@@ -54,5 +44,19 @@ export const ToastProvider: React.FC<Props> = ({ children }) => {
 };
 
 const ToastIcon = ({ toastType }: { toastType: ToastTypes }) => {
-  return toastType === "normal" ? <CheckmarkIcon /> : <NGmarkIcon />;
+  switch (toastType) {
+    case "normal":
+      return <CheckmarkIcon />;
+    case "error":
+      return <NGmarkIcon />;
+  }
+};
+
+const toastText = ({ toastType }: { toastType: ToastTypes }) => {
+  switch (toastType) {
+    case "normal":
+      return "Success";
+    case "error":
+      return "Error";
+  }
 };
