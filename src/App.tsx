@@ -19,11 +19,22 @@ const App = () => {
 
   ///map:todosの各Todo[]に関数を適用する
   ///idが一致する場合、checkedを反転した配列を、一致しない場合、そのままのtodoを返す
-  const handleChangeCheckBox = (id: string) => {
-    const changedTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, checked: !todo.checked } : todo
+  const handleChangeStatus = (id: string) => {
+    const changedTodos: {
+      id?: string;
+      task?: string;
+      description?: string;
+      status?: "Todo" | "Doing" | "Done";
+    }[] = todos.map((todo) =>
+      todo.id === id
+        ? {
+            ...todo,
+            status: todo.status === "Todo" ? "Doing" : "Done",
+          }
+        : todo
     );
     setTodo(changedTodos);
+    console.log("ok")
   };
 
   ///todoを受け取ってtodosの後ろに追加する
@@ -37,16 +48,16 @@ const App = () => {
   ///TaskListの引数にそれぞれ定義したものを与える
   return (
     <ToastProvider>
-    <div>
-      <h1>ToDoList</h1>
-      <TaskSubmit onSubmit={onSubmit} />
-      <TaskList
-        todos={todos}
-        handleChangeCheckBox={handleChangeCheckBox}
-        handleClickDeleteButton={handleClickDeleteButton}
-        title={tasklistTitle}
-      />
-    </div>
+      <div>
+        <h1>ToDoList</h1>
+        <TaskSubmit onSubmit={onSubmit} />
+        <TaskList
+          todos={todos}
+          handleChangeStatus={handleChangeStatus}
+          handleClickDeleteButton={handleClickDeleteButton}
+          title={tasklistTitle}
+        />
+      </div>
     </ToastProvider>
   );
 };

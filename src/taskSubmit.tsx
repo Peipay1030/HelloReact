@@ -35,7 +35,7 @@ export const TaskSubmit = ({
       id: uniqueId,
       task: data.task.trim(),
       description: data.description.trim(),
-      checked: false,
+      status: "Todo",
     });
     reset();
     showToast({ text: "Success", type: "normal" });

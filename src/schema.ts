@@ -16,7 +16,7 @@ export const todoschema = z.object({
     .regex(/^[a-zA-Z0-9]+$/, {
       message: "説明はアルファベットと英数字で入力してください",
     }),
-  checked: z.boolean(),
+  status: z.enum(["Todo", "Doing", "Done"]),
 });
 
 export type Todo = z.infer<typeof todoschema>;
