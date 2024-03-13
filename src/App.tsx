@@ -1,15 +1,17 @@
 import { TaskList } from "./taskList";
 import { TaskSubmit } from "./taskSubmit";
 import { Todo } from "./schema";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToastProvider } from "./useToast";
 
 const App = () => {
+  const savedTodos = JSON.parse(localStorage.getItem("todos")) || [];
+
   ///todos:変数
   ///setTodos:状態更新する関数
   ///useState:フック
   ///<Todo[]>[]:todosの初期値。この場合はTodo[]の空の配列([Todo[], Todo[])
-  const [todos, setTodo] = useState<Todo[]>([]);
+  const [todos, setTodo] = useState<Todo[]>(savedTodos);
 
   ///filiter:trueを返す要素のみの配列を作成
   ///idが一致しない場合true(指定idのタスクを消去)
@@ -34,13 +36,17 @@ const App = () => {
         : todo
     );
     setTodo(changedTodos);
-    console.log("ok")
+    console.log("ok");
   };
 
   ///todoを受け取ってtodosの後ろに追加する
   const onSubmit = (todo: Todo) => {
     setTodo((todos) => [...todos, todo]);
   };
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   const tasklistTitle = "タスク一覧";
 
