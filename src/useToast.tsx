@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext, ReactNode } from "react";
-import { createPortal } from "react-dom";
-import styled from "styled-components";
+import "./toast.css"; // CSSファイルのインポート
+import CheckmarkIcon from "./Checkmark";
+import NGmarkIcon from "./NGmark";
 
 type ToastTypes = "normal" | "error";
 
@@ -20,36 +21,42 @@ type Props = {
 
 // 大元のコンポーネントを囲うためのProvider。トーストの実態もここに入れておく
 export const ToastProvider: React.FC<Props> = ({ children }) => {
-  const [showable, setShowable] = useState(true);
-  const [toastText, setToastText] = useState("");
-  const [toastType, setToastType] = useState<ToastTypes>("normal");
+  const [toastType, setToastType] = useState<ToastTypes>(null);
 
-  const showToast = ({
-    text,
-    type = "normal",
-  }: {
-    text: string;
-    type?: ToastTypes;
-  }) => {
-    setToastText(text);
+  const showToast = ({ type = "normal" }: { type?: ToastTypes }) => {
     setToastType(type);
-    setShowable(true);
+    setTimeout(() => {
+      setToastType(null);
+    }, 5000);
   };
 
   return (
     <ToastContext.Provider value={showToast}>
       {children}
-      {createPortal(
-        <Toast visible={showable} toasttype={toastType}>
-          {toastText}
-        </Toast>,
-        document.body
+      {toastType && (
+        <div className={`toast ${toastType === "normal" ? "normal" : "error"}`}>
+          <ToastIcon toastType={toastType} />
+          <div>{toastText({ toastType })}</div>
+        </div>
       )}
     </ToastContext.Provider>
   );
 };
 
-const Toast = styled.div<{ visible: boolean; toasttype: ToastTypes }>`
-  display: ${(p) => (p.visible ? "block" : "none")};
-  background-color: ${(p) => (p.toasttype === "normal" ? "blue" : "red")};
-`;
+const ToastIcon = ({ toastType }: { toastType: ToastTypes }) => {
+  switch (toastType) {
+    case "normal":
+      return <CheckmarkIcon />;
+    case "error":
+      return <NGmarkIcon />;
+  }
+};
+
+const toastText = ({ toastType }: { toastType: ToastTypes }) => {
+  switch (toastType) {
+    case "normal":
+      return "Success";
+    case "error":
+      return "Error";
+  }
+};
