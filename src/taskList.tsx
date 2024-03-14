@@ -1,38 +1,48 @@
-import { TodoItem } from "./TodoItem";
-import { Todo } from "./schema";
+import { TodoItem } from './TodoItem'
+import { type Todo } from './schema'
 
-///オブジェクトの型定義
-type TaskListProps = {
-  todos: Todo[];
-  handleChangeStatus: (id: string) => void;
-  handleClickDeleteButton: (id: string) => void;
-  title: string;
-};
+/// オブジェクトの型定義
+interface TaskListProps {
+  todos: Todo[]
+  handleChangeStatus: (id: string) => void
+  handleClickDeleteButton: (id: string) => void
+  title: string
+}
 
-///TaskListProps型のオブジェクトを引数に持つ関数
-///map関数を使ってtodosの各要素ごとにTodoItemコンポーネントを生成
+/// TaskListProps型のオブジェクトを引数に持つ関数
+/// map関数を使ってtodosの各要素ごとにTodoItemコンポーネントを生成
 export const TaskList = ({
   todos,
   handleChangeStatus,
   handleClickDeleteButton,
-  title,
+  title
 }: TaskListProps) => {
-  const todoItems = todos.filter((todo) => todo.status === "Todo");
-  const doingItems = todos.filter((todo) => todo.status === "Doing");
-  const doneItems = todos.filter((todo) => todo.status === "Done");
+  const todoItems = todos.filter((todo) => todo.status === 'Todo')
+  const doingItems = todos.filter((todo) => todo.status === 'Doing')
+  const doneItems = todos.filter((todo) => todo.status === 'Done')
 
   return (
     <div>
       <h2>{title}</h2>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: 'flex' }}>
         <div style={{ flex: 1 }}>
           <h3>Todo</h3>
           {todoItems.map((todo) => (
             <div key={todo.id}>
               <h4>{todo.task}</h4>
               <p>{todo.description}</p>
-              <button onClick={() => handleChangeStatus(todo.id)}>Start</button>
-              <button onClick={() => handleClickDeleteButton(todo.id)}>
+              <button
+                onClick={() => {
+                  handleChangeStatus(todo.id)
+                }}
+              >
+                Start
+              </button>
+              <button
+                onClick={() => {
+                  handleClickDeleteButton(todo.id)
+                }}
+              >
                 Delete
               </button>
             </div>
@@ -44,10 +54,18 @@ export const TaskList = ({
             <div key={todo.id}>
               <h4>{todo.task}</h4>
               <p>{todo.description}</p>
-              <button onClick={() => handleChangeStatus(todo.id)}>
+              <button
+                onClick={() => {
+                  handleChangeStatus(todo.id)
+                }}
+              >
                 Complete
               </button>
-              <button onClick={() => handleClickDeleteButton(todo.id)}>
+              <button
+                onClick={() => {
+                  handleClickDeleteButton(todo.id)
+                }}
+              >
                 Delete
               </button>
             </div>
@@ -60,7 +78,11 @@ export const TaskList = ({
               <h4>{todo.task}</h4>
               <p>{todo.description}</p>
               <p>Completed</p>
-              <button onClick={() => handleClickDeleteButton(todo.id)}>
+              <button
+                onClick={() => {
+                  handleClickDeleteButton(todo.id)
+                }}
+              >
                 Delete
               </button>
             </div>
@@ -68,5 +90,5 @@ export const TaskList = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
