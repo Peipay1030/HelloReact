@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const CheckmarkIcon = () => (
   <svg
@@ -19,6 +19,6 @@ const CheckmarkIcon = () => (
       points="14,24 21,31 36,16"
     />
   </svg>
-);
+)
 
-export default CheckmarkIcon;
+export default CheckmarkIcon

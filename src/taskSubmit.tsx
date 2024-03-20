@@ -1,67 +1,67 @@
-import { ErrorMessage } from "./ErrorMessage";
-import { useForm, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { formschema, Form, Todo } from "./schema";
-import { v4 as uuidv4 } from "uuid";
-import { ToastProvider } from "./useToast";
-import { useToast } from "./useToast";
-import { SubmitButton } from "./SubmitButton";
+import React from 'react'
+import { ErrorMessage } from './ErrorMessage'
+import { useForm, useWatch } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { formschema, type Form, type Todo } from './schema'
+import { v4 as uuidv4 } from 'uuid'
+import { ToastProvider, useToast } from './useToast'
+import { SubmitButton } from './SubmitButton'
 
-///onSubmit関数を引数に持つ関数
+/// onSubmit関数を引数に持つ関数
 export const TaskSubmit = ({
-  onSubmit,
+  onSubmit
 }: {
-  onSubmit: (todo: Todo) => void;
+  onSubmit: (todo: Todo) => void
 }) => {
-  ///useFormから返されたオブジェクトから指定の機能を取り出し
-  ///useForm<Form>({オプション})
+  /// useFormから返されたオブジェクトから指定の機能を取り出し
+  /// useForm<Form>({オプション})
   const {
     reset,
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm<Form>({
-    resolver: zodResolver(formschema),
-  });
+    resolver: zodResolver(formschema)
+  })
 
-  const showToast = useToast();
+  const showToast = useToast()
 
-  ///Form型のprops:dataを受け取って、onSubmit関数を呼ぶ
+  /// Form型のprops:dataを受け取って、onSubmit関数を呼ぶ
   const submit = (data: Form) => {
-    console.log("call");
-    const uniqueId = uuidv4();
+    console.log('call')
+    const uniqueId = uuidv4()
     onSubmit({
       id: uniqueId,
       task: data.task.trim(),
       description: data.description.trim(),
-      checked: false,
-    });
-    reset();
-    showToast({ text: "Success", type: "normal" });
-  };
+      status: 'Todo'
+    })
+    reset()
+    showToast({ text: 'Success', type: 'normal' })
+  }
 
   const error = () => {
-    showToast({ text: "Error", type: "error" });
-  };
+    showToast({ text: 'Error', type: 'error' })
+  }
 
-  ///descripitionが更新されるたびにformValuに状態が保存される
+  /// descripitionが更新されるたびにformValuに状態が保存される
   const formValues = useWatch({
-    name: "description",
-    control: control,
-  });
+    name: 'description',
+    control
+  })
 
-  const descriptionTextLength = formValues?.length;
+  const descriptionTextLength = formValues?.length
 
-  ///&&(AND) 左が真なら右を評価
+  /// &&(AND) 左が真なら右を評価
   return (
     <form onSubmit={handleSubmit(submit, error)}>
       <label>task</label>
-      <input {...register("task")} placeholder="タスクを入力してください" />
+      <input {...register('task')} placeholder="タスクを入力してください" />
       {errors.task && <ErrorMessage message={errors.task?.message} />}
       <label>description</label>
       <input
-        {...register("description")}
+        {...register('description')}
         placeholder="説明を入力してください"
       />
       <div>{descriptionTextLength}/100</div>
@@ -70,5 +70,5 @@ export const TaskSubmit = ({
       )}
       <SubmitButton />
     </form>
-  );
-};
+  )
+}
