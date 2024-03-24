@@ -6,17 +6,17 @@ import { ToastProvider } from "./useToast";
 import axios from "axios";
 
 const backendApi = axios.create({
-  baseURL: "http://localhost:8080", // バックエンドサーバーのURLに合わせて変更する必要があります
+  baseURL: "http://localhost:3000", // バックエンドサーバーのURLに合わせて変更する必要があります
 });
 
-//バックエンドサーバーからToDoリストのデータを取得
-const fetchTodosFromBackend = async () => {
-  try {
-    const response = await backendApi.get("/todo");
-    return response.data; // レスポンスのデータを返す
-  } catch (error) {
-    console.error("Error fetching todos from backend: ", error);
-    return []; // エラーが発生した場合は空の配列を返す
+const parseTypetodos = (responsestatus: string): Todo[`status`] => {
+  switch (responsestatus) {
+    case `todo`:
+      return `Todo`;
+    case `doing`:
+      return `Doing`;
+    case "done":
+      return "Done";
   }
 };
 
@@ -25,7 +25,7 @@ const App = () => {
   /// setTodos:状態更新する関数
   /// useState:フック
   /// <Todo[]>[]:todosの初期値。この場合はTodo[]の空の配列([Todo[], Todo[])
-  const [todos, setTodo] = useState([]);
+  const [todos, setTodo] = useState<Todo[]>([]);
 
   useEffect(() => {
     const fetchDataFromServer = async () => {
@@ -33,15 +33,47 @@ const App = () => {
         // サーバーからデータを取得
         const response = await backendApi.get("/todo");
         // データを取得して状態にセット
-        setTodo(response.data);
+        const parseServerDataForFrontend = (response: any): Todo => {
+          const todosfromserver: Todo = {
+            id: response.id,
+            task: response.task,
+            description: response.description,
+            status: parseTypetodos(response.status),
+          };
+          return todosfromserver;
+        };
+
+        const changedTodos: Todo[] = response.data.map((v: any) => {
+          return parseServerDataForFrontend(v);
+        });
+        setTodo(changedTodos);
       } catch (error) {
         console.error("Error fetching data from server: ", error);
       }
     };
-
     // コンポーネントがマウントされたときにデータを取得
-    fetchTodosFromBackend();
-  }, [todos]);
+    fetchDataFromServer();
+  }, []);
+
+  /// todoを受け取ってtodosの後ろに追加する
+  const onSubmit = (todo: Todo) => {
+    setTodo((todos) => [...todos, todo]);
+    const parsePosttodos = () => {
+      return {
+        title: todo.task,
+        description: todo.description,
+      };
+    };
+    const postDataToServer = async () => {
+      try {
+        await backendApi.post("/todo", parsePosttodos());
+        console.log("hoge", parsePosttodos);
+      } catch (error) {
+        console.log("Error posting data to server:", error);
+      }
+    };
+    postDataToServer();
+  };
 
   /// filiter:trueを返す要素のみの配列を作成
   /// idが一致しない場合true(指定idのタスクを消去)
@@ -67,11 +99,6 @@ const App = () => {
     );
     setTodo(changedTodos);
     console.log("ok");
-  };
-
-  /// todoを受け取ってtodosの後ろに追加する
-  const onSubmit = (todo: Todo) => {
-    setTodo((todos) => [...todos, todo]);
   };
 
   const tasklistTitle = "タスク一覧";
