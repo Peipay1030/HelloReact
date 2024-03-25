@@ -1,7 +1,7 @@
 import { TaskList } from "./taskList";
 import { TaskSubmit } from "./taskSubmit";
 import { type Todo } from "./schema";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ToastProvider } from "./useToast";
 import axios from "axios";
 
@@ -20,6 +20,20 @@ const parseTypetodos = (responsestatus: string): Todo[`status`] => {
   }
 };
 
+type status = {
+  status: "todo" | "doing" | "done";
+};
+
+const parseServerDataForFrontend = (response: any): Todo => {
+  const todosfromserver: Todo = {
+    id: response.id,
+    task: response.task,
+    description: response.description,
+    status: parseTypetodos(response.status),
+  };
+  return todosfromserver;
+};
+
 const App = () => {
   /// todos:変数
   /// setTodos:状態更新する関数
@@ -33,15 +47,6 @@ const App = () => {
         // サーバーからデータを取得
         const response = await backendApi.get("/todo");
         // データを取得して状態にセット
-        const parseServerDataForFrontend = (response: any): Todo => {
-          const todosfromserver: Todo = {
-            id: response.id,
-            task: response.task,
-            description: response.description,
-            status: parseTypetodos(response.status),
-          };
-          return todosfromserver;
-        };
 
         const changedTodos: Todo[] = response.data.map((v: any) => {
           return parseServerDataForFrontend(v);
@@ -55,24 +60,31 @@ const App = () => {
     fetchDataFromServer();
   }, []);
 
-  /// todoを受け取ってtodosの後ろに追加する
-  const onSubmit = (todo: Todo) => {
-    setTodo((todos) => [...todos, todo]);
-    const parsePosttodos = () => {
-      return {
-        title: todo.task,
-        description: todo.description,
-      };
+  const parsePosttodos = (todo: Todo) => {
+    return {
+      title: todo.task,
+      description: todo.description,
     };
+  };
+
+  /// todoを受け取ってtodosの後ろに追加する
+  const onSubmit = async (task: string, description: string) => {
     const postDataToServer = async () => {
       try {
-        await backendApi.post("/todo", parsePosttodos());
+        return await backendApi.post("/todo", { title: task, description });
         console.log("hoge", parsePosttodos);
       } catch (error) {
         console.log("Error posting data to server:", error);
       }
     };
-    postDataToServer();
+
+    const response = await postDataToServer();
+
+    const todo = parseServerDataForFrontend(response.data);
+
+    console.log("todo", todo);
+
+    setTodo((todos) => [...todos, todo]);
   };
 
   /// filiter:trueを返す要素のみの配列を作成
@@ -84,20 +96,61 @@ const App = () => {
   /// map:todosの各Todo[]に関数を適用する
   /// idが一致する場合、checkedを反転した配列を、一致しない場合、そのままのtodoを返す
   const handleChangeStatus = (id: string) => {
-    const changedTodos: Array<{
-      id?: string;
-      task?: string;
-      description?: string;
-      status?: "Todo" | "Doing" | "Done";
-    }> = todos.map((todo) =>
-      todo.id === id
-        ? {
+    const targetTodo = todos.find((todo) => todo.id === id);
+
+    const changedTodos = (todo: Todo): Todo => {
+      switch (todo.status) {
+        case "Todo":
+          return {
             ...todo,
-            status: todo.status === "Todo" ? "Doing" : "Done",
-          }
-        : todo,
-    );
-    setTodo(changedTodos);
+            status: "Doing",
+          };
+        case "Doing":
+          return {
+            ...todo,
+            status: "Done",
+          };
+        case "Done":
+          return todo;
+      }
+    };
+
+    const newStatusTodos: Todo[] = todos.map((todo: Todo) => {
+      if (todo.id === id) {
+        return changedTodos(targetTodo);
+      } else {
+        return todo;
+      }
+    });
+
+    setTodo(newStatusTodos);
+
+    const statusChangedTodos = changedTodos(targetTodo);
+
+    const patchStatus = (): status => {
+      switch (statusChangedTodos.status) {
+        case "Todo":
+          return { status: "todo" };
+        case "Doing":
+          return { status: "doing" };
+        case "Done":
+          return { status: "done" };
+      }
+    };
+
+    console.log();
+
+    const patchDataToServer = async (id: string) => {
+      try {
+        await backendApi.patch(`/todo/${id}/status`, patchStatus());
+        console.log("hoge", patchStatus());
+      } catch (error) {
+        console.log("Error patching data to server:", error);
+      }
+    };
+
+    patchDataToServer(id);
+
     console.log("ok");
   };
 
