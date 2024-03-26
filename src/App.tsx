@@ -4,6 +4,11 @@ import { type Todo } from "./schema";
 import { useState, useEffect, useMemo } from "react";
 import { ToastProvider } from "./useToast";
 import axios from "axios";
+import Detail from "./TaskDetail";
+import Home from "./TaskHome";
+import { Routes, Route, createBrowserRouter } from "react-router-dom";
+import ReactDOM from "react-dom";
+import React from "react";
 
 const backendApi = axios.create({
   baseURL: "http://localhost:3000", // バックエンドサーバーのURLに合わせて変更する必要があります
@@ -27,7 +32,7 @@ type status = {
 const parseServerDataForFrontend = (response: any): Todo => {
   const todosfromserver: Todo = {
     id: response.id,
-    task: response.task,
+    task: response.title,
     description: response.description,
     status: parseTypetodos(response.status),
   };
@@ -164,19 +169,33 @@ const App = () => {
 
   const tasklistTitle = "タスク一覧";
 
-  /// TaskSubmitの引数onSubmitに関数onSubmitを与える
-  /// TaskListの引数にそれぞれ定義したものを与える
-  return (
-    <ToastProvider>
-      <div>
-        <h1>ToDoList</h1>
+  const TaskListPage = () => {
+    return (
+      <>
         <TaskSubmit onSubmit={onSubmit} />
         <TaskList
           todos={todos}
           handleChangeStatus={handleChangeStatus}
           handleClickDeleteButton={handleClickDeleteButton}
           title={tasklistTitle}
+          handleClickDetailButton={handleClickDetailButton}
         />
+      </>
+    );
+  };
+
+  const handleClickDetailButton = (id: string) => {
+    return;
+  };
+
+  /// TaskSubmitの引数onSubmitに関数onSubmitを与える
+  /// TaskListの引数にそれぞれ定義したものを与える
+
+  return (
+    <ToastProvider>
+      <div>
+        <h1>ToDoList</h1>
+        {TaskListPage()}
       </div>
     </ToastProvider>
   );
