@@ -7,6 +7,7 @@ interface TaskListProps {
   handleChangeStatus: (id: string) => void;
   handleClickDeleteButton: (id: string) => void;
   title: string;
+  handleClickDetailButton: (id: string) => void;
 }
 
 /// TaskListProps型のオブジェクトを引数に持つ関数
@@ -16,6 +17,7 @@ export const TaskList = ({
   handleChangeStatus,
   handleClickDeleteButton,
   title,
+  handleClickDetailButton,
 }: TaskListProps) => {
   const todoItems = todos.filter((todo) => todo.status === "Todo");
   const doingItems = todos.filter((todo) => todo.status === "Doing");
@@ -45,6 +47,9 @@ export const TaskList = ({
                 }}
               >
                 Delete
+              </button>
+              <button onClick={() => handleClickDetailButton(todo.id)}>
+                Detail
               </button>
             </div>
           ))}
