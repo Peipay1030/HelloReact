@@ -90,9 +90,17 @@ const App = () => {
   /// filiter:trueを返す要素のみの配列を作成
   /// idが一致しない場合true(指定idのタスクを消去)
   const handleClickDeleteButton = (id: string) => {
+    const deleteTodo = async (id: string) => {
+      try {
+        await backendApi.delete(`/todo/${id}`);
+        console.log("delete");
+      } catch (error) {
+        console.log("Error delete task:", error);
+      }
+    };
     setTodo(todos.filter((todo) => todo.id !== id));
+    deleteTodo(id);
   };
-
   /// map:todosの各Todo[]に関数を適用する
   /// idが一致する場合、checkedを反転した配列を、一致しない場合、そのままのtodoを返す
   const handleChangeStatus = (id: string) => {
