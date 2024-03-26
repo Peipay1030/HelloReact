@@ -1,12 +1,12 @@
-import { TodoItem } from './TodoItem'
-import { type Todo } from './schema'
+import { TodoItem } from "./TodoItem";
+import { type Todo } from "./schema";
 
 /// オブジェクトの型定義
 interface TaskListProps {
-  todos: Todo[]
-  handleChangeStatus: (id: string) => void
-  handleClickDeleteButton: (id: string) => void
-  title: string
+  todos: Todo[];
+  handleChangeStatus: (id: string) => void;
+  handleClickDeleteButton: (id: string) => void;
+  title: string;
 }
 
 /// TaskListProps型のオブジェクトを引数に持つ関数
@@ -15,16 +15,17 @@ export const TaskList = ({
   todos,
   handleChangeStatus,
   handleClickDeleteButton,
-  title
+  title,
 }: TaskListProps) => {
-  const todoItems = todos.filter((todo) => todo.status === 'Todo')
-  const doingItems = todos.filter((todo) => todo.status === 'Doing')
-  const doneItems = todos.filter((todo) => todo.status === 'Done')
+  const todoItems = todos.filter((todo) => todo.status === "Todo");
+  const doingItems = todos.filter((todo) => todo.status === "Doing");
+  const doneItems = todos.filter((todo) => todo.status === "Done");
+  console.log(todos, todoItems, doingItems, doneItems);
 
   return (
     <div>
       <h2>{title}</h2>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         <div style={{ flex: 1 }}>
           <h3>Todo</h3>
           {todoItems.map((todo) => (
@@ -33,14 +34,14 @@ export const TaskList = ({
               <p>{todo.description}</p>
               <button
                 onClick={() => {
-                  handleChangeStatus(todo.id)
+                  handleChangeStatus(todo.id);
                 }}
               >
                 Start
               </button>
               <button
                 onClick={() => {
-                  handleClickDeleteButton(todo.id)
+                  handleClickDeleteButton(todo.id);
                 }}
               >
                 Delete
@@ -56,14 +57,14 @@ export const TaskList = ({
               <p>{todo.description}</p>
               <button
                 onClick={() => {
-                  handleChangeStatus(todo.id)
+                  handleChangeStatus(todo.id);
                 }}
               >
                 Complete
               </button>
               <button
                 onClick={() => {
-                  handleClickDeleteButton(todo.id)
+                  handleClickDeleteButton(todo.id);
                 }}
               >
                 Delete
@@ -80,7 +81,7 @@ export const TaskList = ({
               <p>Completed</p>
               <button
                 onClick={() => {
-                  handleClickDeleteButton(todo.id)
+                  handleClickDeleteButton(todo.id);
                 }}
               >
                 Delete
@@ -90,5 +91,5 @@ export const TaskList = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

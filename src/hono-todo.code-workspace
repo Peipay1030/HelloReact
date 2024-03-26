@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../hono-todo"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"javascript.format.enable": true,
+		"typescript.format.enable": true
+	}
+}
