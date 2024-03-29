@@ -6,7 +6,13 @@ import { ToastProvider } from "./useToast";
 import axios from "axios";
 import Detail from "./TaskDetail";
 import Home from "./TaskHome";
-import { Routes, Route, createBrowserRouter } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  createBrowserRouter,
+  Outlet,
+  Link,
+} from "react-router-dom";
 import ReactDOM from "react-dom";
 import React from "react";
 
@@ -27,6 +33,10 @@ const parseTypetodos = (responsestatus: string): Todo[`status`] => {
 
 type status = {
   status: "todo" | "doing" | "done";
+};
+
+export const getContacts = (todos: Todo[], id: string) => {
+  return todos.find((todo) => todo.id === id);
 };
 
 const parseServerDataForFrontend = (response: any): Todo => {
@@ -167,6 +177,10 @@ const App = () => {
     console.log("ok");
   };
 
+  const handleClickDetailButton = (id: string) => {
+    return `https://localhost/todo/aaaa`;
+  };
+
   const tasklistTitle = "タスク一覧";
 
   const TaskListPage = () => {
@@ -182,10 +196,6 @@ const App = () => {
         />
       </>
     );
-  };
-
-  const handleClickDetailButton = (id: string) => {
-    return;
   };
 
   /// TaskSubmitの引数onSubmitに関数onSubmitを与える

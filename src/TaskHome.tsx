@@ -8,9 +8,6 @@ const Home = () => {
         <li>
           <NavLink to={"todo"}>TodoList</NavLink>
         </li>
-        <li>
-          <NavLink to={"todo/:id"}>Detail</NavLink>
-        </li>
       </ul>
     </div>
   );

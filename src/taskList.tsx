@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import { TodoItem } from "./TodoItem";
 import { type Todo } from "./schema";
 
@@ -48,9 +49,7 @@ export const TaskList = ({
               >
                 Delete
               </button>
-              <button onClick={() => handleClickDetailButton(todo.id)}>
-                Detail
-              </button>
+              <NavLink to={`/todo/${todo.id}`}>Detail</NavLink>
             </div>
           ))}
         </div>
