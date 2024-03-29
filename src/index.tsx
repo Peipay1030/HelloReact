@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
-import Detail from "./TaskDetail";
+import { Detail } from "./TaskDetail";
 import Home from "./TaskHome";
 
 const AppRouter = () => (
@@ -11,7 +11,7 @@ const AppRouter = () => (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/todo" element={<App />} />
-      <Route path="/todo/:id" element={<Detail />} />
+      <Route path="todo/:id" element={<Detail />}></Route>
     </Routes>
   </Router>
 );
