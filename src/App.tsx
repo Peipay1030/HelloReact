@@ -16,7 +16,7 @@ import {
 import ReactDOM from "react-dom";
 import React from "react";
 
-const backendApi = axios.create({
+export const backendApi = axios.create({
   baseURL: "http://localhost:3000", // バックエンドサーバーのURLに合わせて変更する必要があります
 });
 
