@@ -7,7 +7,10 @@ import { backendApi, getContacts } from "./App";
 
 export const Detail: FC = () => {
   const params = useParams();
-  const [detaildata, setDetaildata] = useState<responseType | null>(null);
+  const [detaildata, setDetaildata] = useState<{
+    detaildata: responseType | null;
+    status: "loading" | "error" | "success";
+  }>({ detaildata: null, status: "loading" });
 
   type responseType = {
     id: string;
@@ -26,29 +29,42 @@ export const Detail: FC = () => {
         const response = await backendApi.get("/todo");
         const todos: responseType[] = response.data;
         const targetTodo = todos.find((todo) => todo.id === params.id);
-        setDetaildata(targetTodo || null);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        setDetaildata({ detaildata: targetTodo || null, status: "success" });
       } catch (error) {
         console.error("Error fetching data from server: ", error);
+        setDetaildata({ detaildata: null, status: "error" });
       }
     };
     // コンポーネントがマウントされたときにデータを取得
     fetchDataFromServer();
   }, [params.id]);
 
+  const details = detaildata.detaildata;
+
+  const pageRequest = () => {
+    switch (detaildata.status) {
+      case "success":
+        return (
+          <div>
+            <div>title:{details.title}</div>
+            <div>id:{details.id}</div>
+            <div>description:{details.description}</div>
+            <div>create date:{details.created_at}</div>
+            <div>status:{details.status}</div>
+          </div>
+        );
+      case "loading":
+        return <div>loading</div>;
+      case "error":
+        return <div>error</div>;
+    }
+  };
+
   return (
     <div>
-      <div>
-        <h1>hey</h1>
-        {detaildata && (
-          <>
-            <div>title:{detaildata.title}</div>
-            <div>id:{detaildata.id}</div>
-            <div>description:{detaildata.description}</div>
-            <div>create date:{detaildata.created_at}</div>
-            <div>status:{detaildata.status}</div>
-          </>
-        )}
-      </div>
+      <h1>hey</h1>
+      {pageRequest()}
     </div>
   );
 };
